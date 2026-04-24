@@ -16,7 +16,7 @@ public class Main extends Application {
     public void start(Stage stage) {
 
         //creamos la imagen de fondo
-        Image fondoImg = new Image(getClass().getResource("/img/fondo.png").toExternalForm());
+        Image fondoImg = new Image(getClass().getResource("/img/fondo.jpg").toExternalForm());
         ImageView fondo = new ImageView(fondoImg);
         fondo.setFitWidth(1024);
         fondo.setFitHeight(500);

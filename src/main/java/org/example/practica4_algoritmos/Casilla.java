@@ -1,12 +1,8 @@
 package org.example.practica4_algoritmos;
 
-// Representa una casilla del tablero.
 public class Casilla implements Comparable<Casilla> {
-    private int fila;
-    private int columna;
-    private int valor;
-    private boolean activa;
-    private boolean seleccionada;
+    private int fila, columna, valor;
+    private boolean activa, seleccionada;
 
     public Casilla(int fila, int columna, int valor) {
         this.fila = fila;
@@ -16,51 +12,21 @@ public class Casilla implements Comparable<Casilla> {
         this.seleccionada = false;
     }
 
-    public int getFila() {
-        return fila;
-    }
+    // getters y setters
+    public int getFila() { return fila; }
+    public void setFila(int fila) { this.fila = fila; }
+    public int getColumna() { return columna; }
+    public void setColumna(int columna) { this.columna = columna; }
+    public int getValor() { return valor; }
+    public boolean isActiva() { return activa; }
+    public void setActiva(boolean activa) { this.activa = activa; }
+    public boolean isSeleccionada() { return seleccionada; }
+    public void setSeleccionada(boolean seleccionada) { this.seleccionada = seleccionada; }
 
-    public void setFila(int fila) {
-        this.fila = fila;
-    }
-
-    public int getColumna() {
-        return columna;
-    }
-
-    public void setColumna(int columna) {
-        this.columna = columna;
-    }
-
-    public int getValor() {
-        return valor;
-    }
-
-    public boolean isActiva() {
-        return activa;
-    }
-
-    public void setActiva(boolean activa) {
-        this.activa = activa;
-    }
-
-    public boolean isSeleccionada() {
-        return seleccionada;
-    }
-
-    public void setSeleccionada(boolean seleccionada) {
-        this.seleccionada = seleccionada;
-    }
-
-    // Dos casillas concuerdan si son iguales o si su suma es 10.
     @Override
     public int compareTo(Casilla otra) {
-        if (otra == null) {
-            return -1;
-        }
-        if (valor == otra.valor || valor + otra.valor == 10) {
-            return 0;
-        }
+        if (otra == null) return -1;
+        if (valor == otra.valor || valor + otra.valor == 10) return 0;
         return Integer.compare(valor, otra.valor);
     }
 }

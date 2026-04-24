@@ -1,0 +1,79 @@
+.root {
+    -fx-font-family: "Arial";
+}
+
+.boton-jugar {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#213fd5, #4c64e4);
+    -fx-text-fill: white;
+    -fx-padding: 15 30;
+    -fx-cursor: hand;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.boton-jugar:hover {
+    -fx-background-color: linear-gradient(#0d1b6e, #0d1b6e);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 2);
+}
+
+.boton-salir {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#213fd5, #4c64e4);
+    -fx-text-fill: white;
+    -fx-padding: 15 30;
+    -fx-cursor: hand;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+.boton-salir:hover {
+    -fx-background-color: linear-gradient(#0d1b6e, #0d1b6e);
+}
+
+.scroll-pane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+.scroll-pane .viewport {
+    -fx-background: transparent;
+}
+
+.scroll-bar:horizontal {
+    -fx-background-color: rgba(0,0,0,0.5);
+}
+
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: #f39c12;
+}
+
+.boton-mover {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#213fd5, #4c64e4);
+    -fx-text-fill: white;
+    -fx-padding: 15 30;
+    -fx-cursor: hand;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+.boton-mover:hover {
+    -fx-background-color: linear-gradient(#0d1b6e, #0d1b6e);
+}
+
+
+.boton-grafica {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-background-color: linear-gradient(#213fd5, #4c64e4);
+    -fx-text-fill: white;
+    -fx-padding: 15 30;
+    -fx-cursor: hand;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+.boton-grafica:hover {
+    -fx-background-color: linear-gradient(#0d1b6e, #0d1b6e);
+}

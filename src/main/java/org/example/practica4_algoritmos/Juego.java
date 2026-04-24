@@ -17,42 +17,18 @@ public class Juego {
         concordanciasPendientes = calcularConcordanciasPendientes();
     }
 
-    public Tablero getTablero() {
-        return tablero;
-    }
-
-    public int getPuntos() {
-        return puntos;
-    }
-
-    public int getConcordanciasEncontradas() {
-        return concordanciasEncontradas;
-    }
-
-    public int getConcordanciasPendientes() {
-        return concordanciasPendientes;
-    }
-
-    public int getPistasRestantes() {
-        return pistasRestantes;
-    }
+    public Tablero getTablero() { return tablero; }
+    public int getPuntos() { return puntos; }
+    public int getConcordanciasEncontradas() { return concordanciasEncontradas; }
+    public int getConcordanciasPendientes() { return concordanciasPendientes; }
+    public int getPistasRestantes() { return pistasRestantes; }
 
     public boolean seleccionarPar(Casilla primera, Casilla segunda) {
-        if (primera == null || segunda == null) {
-            return false;
-        }
-        if (primera == segunda) {
-            return false;
-        }
-        if (!primera.isActiva() || !segunda.isActiva()) {
-            return false;
-        }
-        if (primera.compareTo(segunda) != 0) {
-            return false;
-        }
-        if (!esMovimientoValido(primera, segunda)) {
-            return false;
-        }
+        if (primera == null || segunda == null) return false;
+        if (primera == segunda) return false;
+        if (!primera.isActiva() || !segunda.isActiva()) return false;
+        if (primera.compareTo(segunda) != 0) return false;
+        if (!esMovimientoValido(primera, segunda)) return false;
 
         historial.insertarInicio(new Movimiento(primera, segunda, puntos, concordanciasEncontradas, concordanciasPendientes, pistasRestantes));
 
@@ -67,112 +43,89 @@ public class Juego {
         return true;
     }
 
-    // Determina si dos casillas forman un movimiento permitido.
+    // Validación usando nodos y enlaces
     public boolean esMovimientoValido(Casilla a, Casilla b) {
-        if (a == null || b == null) {
-            return false;
-        }
+        if (a == null || b == null) return false;
+        Node nodoA = tablero.getNode(a.getFila(), a.getColumna());
+        Node nodoB = tablero.getNode(b.getFila(), b.getColumna());
 
+        // Misma fila -> recorrer left/right
         if (a.getFila() == b.getFila()) {
-            return caminoLibreEnFila(a, b);
+            return caminoLibreHorizontal(nodoA, nodoB);
         }
-
+        // Misma columna -> up/down
         if (a.getColumna() == b.getColumna()) {
-            return caminoLibreEnColumna(a, b);
+            return caminoLibreVertical(nodoA, nodoB);
         }
-
+        // Diagonal (|Δfila| == |Δcol|)
         if (Math.abs(a.getFila() - b.getFila()) == Math.abs(a.getColumna() - b.getColumna())) {
-            return caminoLibreEnDiagonal(a, b);
+            return caminoLibreDiagonal(nodoA, nodoB);
         }
-
+        // Caso especial: borde lineal (final de fila con inicio de la siguiente)
         return caminoLibreLineal(a, b);
     }
 
-    private boolean caminoLibreEnFila(Casilla a, Casilla b) {
-        int fila = a.getFila();
-        int inicio = Math.min(a.getColumna(), b.getColumna()) + 1;
-        int fin = Math.max(a.getColumna(), b.getColumna());
-
-        for (int columna = inicio; columna < fin; columna++) {
-            Casilla c = tablero.getCasilla(fila, columna);
-            if (c != null && c.isActiva()) {
-                return false;
-            }
+    private boolean caminoLibreHorizontal(Node start, Node end) {
+        // Asumimos misma fila, start y end son diferentes
+        int step = (start.getCasilla().getColumna() < end.getCasilla().getColumna()) ? 1 : -1;
+        Node current = (step == 1) ? start.getRight() : start.getLeft();
+        while (current != null && current != end) {
+            if (current.getCasilla().isActiva()) return false;
+            current = (step == 1) ? current.getRight() : current.getLeft();
         }
-        return true;
+        return current == end;
     }
 
-    private boolean caminoLibreEnColumna(Casilla a, Casilla b) {
-        int columna = a.getColumna();
-        int inicio = Math.min(a.getFila(), b.getFila()) + 1;
-        int fin = Math.max(a.getFila(), b.getFila());
-
-        for (int fila = inicio; fila < fin; fila++) {
-            Casilla c = tablero.getCasilla(fila, columna);
-            if (c != null && c.isActiva()) {
-                return false;
-            }
+    private boolean caminoLibreVertical(Node start, Node end) {
+        int step = (start.getCasilla().getFila() < end.getCasilla().getFila()) ? 1 : -1;
+        Node current = (step == 1) ? start.getDown() : start.getUp();
+        while (current != null && current != end) {
+            if (current.getCasilla().isActiva()) return false;
+            current = (step == 1) ? current.getDown() : current.getUp();
         }
-        return true;
+        return current == end;
     }
 
-    private boolean caminoLibreEnDiagonal(Casilla a, Casilla b) {
-        int pasoFila = a.getFila() < b.getFila() ? 1 : -1;
-        int pasoColumna = a.getColumna() < b.getColumna() ? 1 : -1;
+    private boolean caminoLibreDiagonal(Node start, Node end) {
+        int deltaFila = end.getCasilla().getFila() - start.getCasilla().getFila();
+        int deltaCol = end.getCasilla().getColumna() - start.getCasilla().getColumna();
+        int pasoFila = deltaFila / Math.abs(deltaFila);
+        int pasoCol = deltaCol / Math.abs(deltaCol);
 
-        int fila = a.getFila() + pasoFila;
-        int columna = a.getColumna() + pasoColumna;
-
-        while (fila != b.getFila() && columna != b.getColumna()) {
-            Casilla c = tablero.getCasilla(fila, columna);
-            if (c != null && c.isActiva()) {
-                return false;
-            }
-            fila += pasoFila;
-            columna += pasoColumna;
+        Node current = start;
+        while (true) {
+            if (pasoFila == 1 && pasoCol == 1) current = current.getDownRight();
+            else if (pasoFila == 1 && pasoCol == -1) current = current.getDownLeft();
+            else if (pasoFila == -1 && pasoCol == 1) current = current.getUpRight();
+            else current = current.getUpLeft();
+            if (current == null || current == end) break;
+            if (current.getCasilla().isActiva()) return false;
         }
-        return true;
+        return current == end;
     }
 
-    // Une las casillas siguiendo el orden lineal del tablero.
-    // El final de un renglón con el inicio del siguiente.
+    // Borde lineal: final de un renglón (columna = columnas-1) con inicio del siguiente (columna=0, fila+1)
     private boolean caminoLibreLineal(Casilla a, Casilla b) {
-        int indiceA = getIndiceLineal(a);
-        int indiceB = getIndiceLineal(b);
-
-        int inicio = Math.min(indiceA, indiceB);
-        int fin = Math.max(indiceA, indiceB);
-
-        for (int i = inicio + 1; i < fin; i++) {
-            Casilla c = tablero.getCasillas().obtener(i);
-            if (c != null && c.isActiva()) {
-                return false;
-            }
+        int colFin = tablero.getColumnas() - 1;
+        // Caso a en última columna y b en primera columna de la fila siguiente
+        if (a.getColumna() == colFin && b.getColumna() == 0 && b.getFila() == a.getFila() + 1) {
+            return true; // son adyacentes en el borde, no hay casillas intermedias
         }
-        return true;
-    }
-
-    private int getIndiceLineal(Casilla casilla) {
-        return casilla.getFila() * tablero.getColumnas() + casilla.getColumna();
+        // Caso inverso
+        if (b.getColumna() == colFin && a.getColumna() == 0 && a.getFila() == b.getFila() + 1) {
+            return true;
+        }
+        return false;
     }
 
     public Casilla[] darPista() {
-        if (pistasRestantes <= 0) {
-            return null;
-        }
-
+        if (pistasRestantes <= 0) return null;
         for (int i = 0; i < tablero.getTotalCasillas(); i++) {
             Casilla a = tablero.getCasillas().obtener(i);
-            if (a == null || !a.isActiva()) {
-                continue;
-            }
-
-            for (int j = i + 1; j < tablero.getTotalCasillas(); j++) {
+            if (a == null || !a.isActiva()) continue;
+            for (int j = i+1; j < tablero.getTotalCasillas(); j++) {
                 Casilla b = tablero.getCasillas().obtener(j);
-                if (b == null || !b.isActiva()) {
-                    continue;
-                }
-
+                if (b == null || !b.isActiva()) continue;
                 if (a.compareTo(b) == 0 && esMovimientoValido(a, b)) {
                     pistasRestantes--;
                     return new Casilla[]{a, b};
@@ -183,20 +136,14 @@ public class Juego {
     }
 
     public boolean deshacer() {
-        Movimiento movimiento = historial.eliminarInicio();
-        if (movimiento == null) {
-            return false;
-        }
-
-        movimiento.getCasilla1().setActiva(true);
-        movimiento.getCasilla2().setActiva(true);
-        movimiento.getCasilla1().setSeleccionada(false);
-        movimiento.getCasilla2().setSeleccionada(false);
-
-        puntos = movimiento.getPuntosAntes();
-        concordanciasEncontradas = movimiento.getEncontradasAntes();
-        concordanciasPendientes = movimiento.getPendientesAntes();
-        pistasRestantes = movimiento.getPistasAntes();
+        Movimiento mov = historial.eliminarInicio();
+        if (mov == null) return false;
+        mov.getCasilla1().setActiva(true);
+        mov.getCasilla2().setActiva(true);
+        puntos = mov.getPuntosAntes();
+        concordanciasEncontradas = mov.getEncontradasAntes();
+        concordanciasPendientes = mov.getPendientesAntes();
+        pistasRestantes = mov.getPistasAntes();
         return true;
     }
 
@@ -209,19 +156,11 @@ public class Juego {
     public boolean hayMovimientosDisponibles() {
         for (int i = 0; i < tablero.getTotalCasillas(); i++) {
             Casilla a = tablero.getCasillas().obtener(i);
-            if (a == null || !a.isActiva()) {
-                continue;
-            }
-
-            for (int j = i + 1; j < tablero.getTotalCasillas(); j++) {
+            if (a == null || !a.isActiva()) continue;
+            for (int j = i+1; j < tablero.getTotalCasillas(); j++) {
                 Casilla b = tablero.getCasillas().obtener(j);
-                if (b == null || !b.isActiva()) {
-                    continue;
-                }
-
-                if (a.compareTo(b) == 0 && esMovimientoValido(a, b)) {
-                    return true;
-                }
+                if (b == null || !b.isActiva()) continue;
+                if (a.compareTo(b) == 0 && esMovimientoValido(a, b)) return true;
             }
         }
         return false;
@@ -232,27 +171,16 @@ public class Juego {
     }
 
     private int calcularConcordanciasPendientes() {
-        int contador = 0;
-
+        int cont = 0;
         for (int i = 0; i < tablero.getTotalCasillas(); i++) {
             Casilla a = tablero.getCasillas().obtener(i);
-            if (a == null || !a.isActiva()) {
-                continue;
-            }
-
-            for (int j = i + 1; j < tablero.getTotalCasillas(); j++) {
+            if (a == null || !a.isActiva()) continue;
+            for (int j = i+1; j < tablero.getTotalCasillas(); j++) {
                 Casilla b = tablero.getCasillas().obtener(j);
-                if (b == null || !b.isActiva()) {
-                    continue;
-                }
-
-                if (a.compareTo(b) == 0 && esMovimientoValido(a, b)) {
-                    contador++;
-                }
+                if (b == null || !b.isActiva()) continue;
+                if (a.compareTo(b) == 0 && esMovimientoValido(a, b)) cont++;
             }
         }
-
-        return contador;
+        return cont;
     }
-
 }
