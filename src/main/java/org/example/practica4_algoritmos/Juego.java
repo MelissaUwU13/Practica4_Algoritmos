@@ -43,11 +43,11 @@ public class Juego {
         return true;
     }
 
-    // Validación usando nodos y enlaces
+    // Validación usando nodos y enlaces (ahora con Node<Casilla>)
     public boolean esMovimientoValido(Casilla a, Casilla b) {
         if (a == null || b == null) return false;
-        Node nodoA = tablero.getNode(a.getFila(), a.getColumna());
-        Node nodoB = tablero.getNode(b.getFila(), b.getColumna());
+        Node<Casilla> nodoA = tablero.getNode(a.getFila(), a.getColumna());
+        Node<Casilla> nodoB = tablero.getNode(b.getFila(), b.getColumna());
 
         // Misma fila -> recorrer left/right
         if (a.getFila() == b.getFila()) {
@@ -65,53 +65,49 @@ public class Juego {
         return caminoLibreLineal(a, b);
     }
 
-    private boolean caminoLibreHorizontal(Node start, Node end) {
-        // Asumimos misma fila, start y end son diferentes
-        int step = (start.getCasilla().getColumna() < end.getCasilla().getColumna()) ? 1 : -1;
-        Node current = (step == 1) ? start.getRight() : start.getLeft();
+    private boolean caminoLibreHorizontal(Node<Casilla> start, Node<Casilla> end) {
+        int step = (start.getContent().getColumna() < end.getContent().getColumna()) ? 1 : -1;
+        Node<Casilla> current = (step == 1) ? start.getRight() : start.getLeft();
         while (current != null && current != end) {
-            if (current.getCasilla().isActiva()) return false;
+            if (current.getContent().isActiva()) return false;
             current = (step == 1) ? current.getRight() : current.getLeft();
         }
         return current == end;
     }
 
-    private boolean caminoLibreVertical(Node start, Node end) {
-        int step = (start.getCasilla().getFila() < end.getCasilla().getFila()) ? 1 : -1;
-        Node current = (step == 1) ? start.getDown() : start.getUp();
+    private boolean caminoLibreVertical(Node<Casilla> start, Node<Casilla> end) {
+        int step = (start.getContent().getFila() < end.getContent().getFila()) ? 1 : -1;
+        Node<Casilla> current = (step == 1) ? start.getDown() : start.getUp();
         while (current != null && current != end) {
-            if (current.getCasilla().isActiva()) return false;
+            if (current.getContent().isActiva()) return false;
             current = (step == 1) ? current.getDown() : current.getUp();
         }
         return current == end;
     }
 
-    private boolean caminoLibreDiagonal(Node start, Node end) {
-        int deltaFila = end.getCasilla().getFila() - start.getCasilla().getFila();
-        int deltaCol = end.getCasilla().getColumna() - start.getCasilla().getColumna();
+    private boolean caminoLibreDiagonal(Node<Casilla> start, Node<Casilla> end) {
+        int deltaFila = end.getContent().getFila() - start.getContent().getFila();
+        int deltaCol = end.getContent().getColumna() - start.getContent().getColumna();
         int pasoFila = deltaFila / Math.abs(deltaFila);
         int pasoCol = deltaCol / Math.abs(deltaCol);
 
-        Node current = start;
+        Node<Casilla> current = start;
         while (true) {
             if (pasoFila == 1 && pasoCol == 1) current = current.getDownRight();
             else if (pasoFila == 1 && pasoCol == -1) current = current.getDownLeft();
             else if (pasoFila == -1 && pasoCol == 1) current = current.getUpRight();
             else current = current.getUpLeft();
             if (current == null || current == end) break;
-            if (current.getCasilla().isActiva()) return false;
+            if (current.getContent().isActiva()) return false;
         }
         return current == end;
     }
 
-    // Borde lineal: final de un renglón (columna = columnas-1) con inicio del siguiente (columna=0, fila+1)
     private boolean caminoLibreLineal(Casilla a, Casilla b) {
         int colFin = tablero.getColumnas() - 1;
-        // Caso a en última columna y b en primera columna de la fila siguiente
         if (a.getColumna() == colFin && b.getColumna() == 0 && b.getFila() == a.getFila() + 1) {
-            return true; // son adyacentes en el borde, no hay casillas intermedias
+            return true;
         }
-        // Caso inverso
         if (b.getColumna() == colFin && a.getColumna() == 0 && a.getFila() == b.getFila() + 1) {
             return true;
         }

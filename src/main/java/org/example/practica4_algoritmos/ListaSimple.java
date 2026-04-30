@@ -1,6 +1,8 @@
 package org.example.practica4_algoritmos;
 
 public class ListaSimple<T> {
+
+    //esto no aqui asi que modificar!!!
     private static class Nodo<E> {
         E info;
         Nodo<E> sig;
