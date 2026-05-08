@@ -19,6 +19,7 @@ public class TableroGUI {
         construir();
     }
 
+    //Metodo para construir la base del tablero a tra ves de dos fors y botones
     private void construir() {
         gridPane.setHgap(0);
         gridPane.setVgap(0);
@@ -37,11 +38,13 @@ public class TableroGUI {
         actualizar();
     }
 
+    //Actualizamos el diseño de los colores dependiendo de si son seleccionadas, o si ya fueron encontradas
     public void actualizar() {
         for (int f = 0; f < tablero.getFilas(); f++) {
             for (int c = 0; c < tablero.getColumnas(); c++) {
                 Casilla cas = tablero.getCasilla(f, c);
                 Button btn = botones[f][c];
+                //si esta activa es porque aun no fue eliminada
                 if (cas.isActiva()) {
                     btn.setDisable(false);
                     btn.setText(String.valueOf(cas.getValor()));
@@ -49,7 +52,9 @@ public class TableroGUI {
                         btn.setStyle("-fx-background-color: #42a5f5; -fx-border-color: #ebebeb; -fx-border-width: 1; -fx-font-size: 20px; -fx-text-fill: white;");
                     else
                         btn.setStyle("-fx-background-color: white; -fx-border-color: #ebebeb; -fx-border-width: 1; -fx-font-size: 20px; -fx-text-fill: black;");
-                } else {
+                }
+                //si esta desactiva es porque ya encontraron su par
+                else {
                     btn.setDisable(true);
                     btn.setText(cas.getValor() == 0 ? "" : String.valueOf(cas.getValor()));
                     btn.setStyle("-fx-background-color: white; -fx-border-color: #ebebeb; -fx-border-width: 1; -fx-font-size: 20px; -fx-text-fill: #d9d9d9;");
@@ -58,20 +63,13 @@ public class TableroGUI {
         }
     }
 
+    //Metodo que cambia el color de las casillas para resaltar la pista
     public void resaltarPista(Casilla a, Casilla b) {
         Button btnA = botones[a.getFila()][a.getColumna()];
         Button btnB = botones[b.getFila()][b.getColumna()];
-        String estiloOriginalA = btnA.getStyle();
-        String estiloOriginalB = btnB.getStyle();
-        btnA.setStyle("-fx-background-color: #ffeb3b; -fx-border-color: #ebebeb; -fx-border-width: 1; -fx-font-size: 20px; -fx-text-fill: black;");
-        btnB.setStyle("-fx-background-color: #ffeb3b; -fx-border-color: #ebebeb; -fx-border-width: 1; -fx-font-size: 20px; -fx-text-fill: black;");
-        PauseTransition pausa = new PauseTransition(Duration.seconds(1.5));
-        pausa.setOnFinished(e -> {
-            btnA.setStyle(estiloOriginalA);
-            btnB.setStyle(estiloOriginalB);
-            actualizar(); // refresca por si hubo cambios
-        });
-        pausa.play();
+
+        btnA.setStyle("-fx-background-color: #4c64e4; -fx-border-color: #ebebeb; -fx-border-width: 1; -fx-font-size: 20px; -fx-text-fill: black;");
+        btnB.setStyle("-fx-background-color: #4c64e4; -fx-border-color: #ebebeb; -fx-border-width: 1; -fx-font-size: 20px; -fx-text-fill: black;");
     }
 
     public GridPane getGridPane() { return gridPane; }

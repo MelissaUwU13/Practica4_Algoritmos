@@ -27,21 +27,19 @@ public class Main extends Application {
         Button btnJugar = new Button("JUGAR");
         Button btnSalir = new Button("SALIR");
 
-        btnJugar.getStyleClass().add("boton-jugar");
-        btnSalir.getStyleClass().add("boton-salir");
+        btnJugar.getStyleClass().add("boton-estilo");
+        btnSalir.getStyleClass().add("boton-estilo");
 
         //Este boton cierra la ventana y se acaba el juego
         btnSalir.setOnAction(e -> stage.close());
 
         //Este boton nos manda a otro Stage de la clase Juego y cambia de ventana
-        // Dentro del evento del botón JUGAR:
         btnJugar.setOnAction(e -> {
             int filas = pedirNumero("Ingresa renglones (mínimo 4):", 4, 10);
             int columnas = pedirNumero("Ingresa columnas (mínimo 10):", 10, 12);
             Controlador controlador = new Controlador();
             controlador.iniciar(stage, filas, columnas);
         });
-// Nota: pedirNumero debe ser un método auxiliar en Main o moverlo a Controlador.
 
         //guardamos los botones en un hbox y lo centramos
         HBox menu = new HBox(20, btnJugar, btnSalir);
@@ -53,12 +51,12 @@ public class Main extends Application {
         //Creamos la escena, guardamos la root e implementamos css
         Scene scene = new Scene(root, 1024, 500);
         scene.getStylesheets().add("/estilo.css");
-
-        //mostramos la escena
         stage.setTitle("Menu Inicial");
         stage.setScene(scene);
         stage.show();
     }
+
+
 
     private int pedirNumero(String mensaje, int minimo, int maximo) {
         while (true) {
@@ -69,7 +67,7 @@ public class Main extends Application {
 
             java.util.Optional<String> resultado = dialogo.showAndWait();
             if (resultado.isEmpty()) {
-                System.exit(0); // El usuario cerró el diálogo → salir del juego
+                System.exit(0); // salir del juego
             }
 
             try {
@@ -86,9 +84,9 @@ public class Main extends Application {
             } catch (NumberFormatException e) {
                 // Mostrar error si no es número
                 Alert alerta = new Alert(Alert.AlertType.ERROR);
-                alerta.setTitle("Dato inválido");
+                alerta.setTitle("Dato inválido!!");
                 alerta.setHeaderText(null);
-                alerta.setContentText("Debes escribir un número entero.");
+                alerta.setContentText("Debes escribir un número entero :c");
                 alerta.showAndWait();
             }
         }

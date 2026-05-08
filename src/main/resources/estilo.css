@@ -2,7 +2,7 @@
     -fx-font-family: "Arial";
 }
 
-.boton-jugar {
+.boton-estilo {
     -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-background-color: linear-gradient(#213fd5, #4c64e4);
@@ -13,24 +13,9 @@
     -fx-background-radius: 10;
 }
 
-.boton-jugar:hover {
+.boton-estilo:hover {
     -fx-background-color: linear-gradient(#0d1b6e, #0d1b6e);
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 10, 0, 0, 2);
-}
-
-.boton-salir {
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-background-color: linear-gradient(#213fd5, #4c64e4);
-    -fx-text-fill: white;
-    -fx-padding: 15 30;
-    -fx-cursor: hand;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-}
-
-.boton-salir:hover {
-    -fx-background-color: linear-gradient(#0d1b6e, #0d1b6e);
 }
 
 .scroll-pane {
@@ -46,34 +31,16 @@
 }
 
 .scroll-bar:horizontal .thumb {
-    -fx-background-color: #f39c12;
+    -fx-background-color: #72c9ef;
 }
 
-.boton-mover {
+.boton-pista {
     -fx-font-size: 12px;
     -fx-font-weight: bold;
-    -fx-background-color: linear-gradient(#213fd5, #4c64e4);
+    -fx-background-color: linear-gradient(#fbd017, #4c64e4);
     -fx-text-fill: white;
     -fx-padding: 15 30;
     -fx-cursor: hand;
     -fx-border-radius: 10;
     -fx-background-radius: 10;
-}
-.boton-mover:hover {
-    -fx-background-color: linear-gradient(#0d1b6e, #0d1b6e);
-}
-
-
-.boton-grafica {
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-    -fx-background-color: linear-gradient(#213fd5, #4c64e4);
-    -fx-text-fill: white;
-    -fx-padding: 15 30;
-    -fx-cursor: hand;
-    -fx-border-radius: 10;
-    -fx-background-radius: 10;
-}
-.boton-grafica:hover {
-    -fx-background-color: linear-gradient(#0d1b6e, #0d1b6e);
 }

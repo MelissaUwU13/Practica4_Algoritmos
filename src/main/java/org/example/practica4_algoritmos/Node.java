@@ -1,16 +1,17 @@
 package org.example.practica4_algoritmos;
 
+//modificar a la que se usa en la tarea
 public class Node<T> {
-    private T content;
+    private T number;
     private Node<T> up, down, left, right, downLeft, downRight, upLeft, upRight;
 
     public Node(T content) {
-        this.content = content;
+        this.number = content;
     }
 
     // Getters y setters
-    public T getContent() { return content; }
-    public void setContent(T content) { this.content = content; }
+    public T getContent() { return number; }
+    public void setContent(T content) { this.number = content; }
 
     public Node<T> getUp() { return up; }
     public void setUp(Node<T> up) { this.up = up; }

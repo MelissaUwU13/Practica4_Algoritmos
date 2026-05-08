@@ -51,13 +51,6 @@ public class ListaSimple<T> {
         return actual.info;
     }
 
-    public void asignar(int indice, T dato) {
-        if (indice < 0 || indice >= tamanio) return;
-        Nodo<T> actual = inicio;
-        for (int i = 0; i < indice; i++) actual = actual.sig;
-        actual.info = dato;
-    }
-
     public int tamanio() { return tamanio; }
     public boolean estaVacia() { return inicio == null; }
     public void vaciar() { inicio = null; tamanio = 0; }

@@ -1,5 +1,6 @@
 package org.example.practica4_algoritmos;
 
+//La logica del juego
 public class Juego {
     private Tablero tablero;
     private ListaSimple<Movimiento> historial;
@@ -17,6 +18,7 @@ public class Juego {
         concordanciasPendientes = calcularConcordanciasPendientes();
     }
 
+    //GETTERS
     public Tablero getTablero() { return tablero; }
     public int getPuntos() { return puntos; }
     public int getConcordanciasEncontradas() { return concordanciasEncontradas; }
@@ -24,23 +26,40 @@ public class Juego {
     public int getPistasRestantes() { return pistasRestantes; }
 
     public boolean seleccionarPar(Casilla primera, Casilla segunda) {
-        if (primera == null || segunda == null) return false;
-        if (primera == segunda) return false;
-        if (!primera.isActiva() || !segunda.isActiva()) return false;
-        if (primera.compareTo(segunda) != 0) return false;
-        if (!esMovimientoValido(primera, segunda)) return false;
+        if (primera == null || segunda == null){
+            return false;
+        }
 
-        historial.insertarInicio(new Movimiento(primera, segunda, puntos, concordanciasEncontradas, concordanciasPendientes, pistasRestantes));
+        if (primera == segunda){
+            return false;
+        }
 
-        primera.setActiva(false);
-        segunda.setActiva(false);
-        primera.setSeleccionada(false);
-        segunda.setSeleccionada(false);
+        if (!primera.isActiva() || !segunda.isActiva()){
+            return false;
+        }
 
-        puntos += primera.getValor() + segunda.getValor();
-        concordanciasEncontradas++;
-        concordanciasPendientes = calcularConcordanciasPendientes();
-        return true;
+        if (primera.compareTo(segunda) != 0){
+            return false;
+        }
+
+        if (!esMovimientoValido(primera, segunda)){
+            return false;
+        }
+
+        else {
+
+            historial.insertarInicio(new Movimiento(primera, segunda, puntos, concordanciasEncontradas, concordanciasPendientes, pistasRestantes));
+
+            primera.setActiva(false);
+            segunda.setActiva(false);
+            primera.setSeleccionada(false);
+            segunda.setSeleccionada(false);
+
+            puntos += primera.getValor() + segunda.getValor();
+            concordanciasEncontradas++;
+            concordanciasPendientes = calcularConcordanciasPendientes();
+            return true;
+        }
     }
 
     // Validación usando nodos y enlaces (ahora con Node<Casilla>)

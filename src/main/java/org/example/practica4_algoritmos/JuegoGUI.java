@@ -6,8 +6,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -23,16 +21,16 @@ public class JuegoGUI {
     }
 
     public void mostrar(Stage stage, TableroGUI tableroGUI) {
-        //creamos la imagen de fondo
-        Image fondoImg = new Image(getClass().getResource("/img/fondoJUEGO.jpeg").toExternalForm());
-        ImageView fondo = new ImageView(fondoImg);
-        fondo.setFitWidth(1024);
-        fondo.setFitHeight(500);
-
         BorderPane raiz = new BorderPane();
-        raiz.setStyle("-fx-background-color: white;");
-        raiz.setPadding(new Insets(15));
 
+        //agregamos el fondo del juego
+        raiz.setStyle(
+                "-fx-background-image: url('/fondoJUEGO.jpeg');" +
+                        "-fx-background-size: cover;" +
+                        "-fx-background-position: center center;"
+        );
+
+        //TEXTOS!!
         Label iconoTrofeo = new Label("🏆");
         iconoTrofeo.setStyle("-fx-font-size: 22px;");
 
@@ -48,34 +46,58 @@ public class JuegoGUI {
         lblPistas = new Label("Pistas: 5");
         lblPistas.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #4f5b62;");
 
+
+        //Acomodamos la informacion de los textos en diferentes espacios y guardamos todo
+        //en un solo panel
         HBox filaPuntos = new HBox(6, iconoTrofeo, lblPuntos);
         filaPuntos.setAlignment(Pos.CENTER);
 
-        VBox panelInfo = new VBox(6, filaPuntos, lblEncontradas, lblPendientes, lblPistas);
+        HBox filaPanels = new HBox(6, lblEncontradas, lblPendientes, lblPistas);
+        filaPuntos.setAlignment(Pos.CENTER);
+
+        VBox panelInfo = new VBox(6, filaPuntos, filaPanels);
         panelInfo.setAlignment(Pos.CENTER);
 
+        //Sirve para crear relleno y que sea vea mejor estructurada la zona
         Region relleno = new Region();
         relleno.setMinWidth(42);
+
         BorderPane panelSuperior = new BorderPane();
         panelSuperior.setCenter(panelInfo);
         panelSuperior.setRight(relleno);
         panelSuperior.setPadding(new Insets(0, 0, 15, 0));
 
-        ScrollPane contenedorTablero = new ScrollPane(tableroGUI.getGridPane());
+        //lo centramos
+        HBox wrapperTablero = new HBox(tableroGUI.getGridPane());
+        wrapperTablero.setAlignment(Pos.CENTER);
+        wrapperTablero.setStyle("-fx-background-color: transparent;");
+
+        //Ingresamos el tablero en un scrollpane para que en caso sea un tablero muy grande
+        //se visualice de forma correcta
+        ScrollPane contenedorTablero = new ScrollPane(wrapperTablero);
         contenedorTablero.setFitToWidth(true);
         contenedorTablero.setPannable(true);
         contenedorTablero.setPrefViewportHeight(330);
         contenedorTablero.setMinViewportHeight(330);
         contenedorTablero.setMaxHeight(360);
 
-        Button btnPista = new Button("💡");
-        btnPista.setStyle("-fx-background-color: #4f5b62; -fx-text-fill: white; -fx-font-size: 22px; -fx-background-radius: 50%; -fx-min-width: 62px; -fx-min-height: 62px; -fx-max-width: 62px; -fx-max-height: 62px;");
+        //agregamos estilo
+        contenedorTablero.setStyle(
+                "-fx-background: transparent;" +
+                        "-fx-background-color: transparent;"
+        );
+
+        //BOTONES
+        Button btnPista = new Button("Pista");
+        btnPista.getStyleClass().add("boton-estilo");
         btnPista.setOnAction(e -> controlador.pedirPista());
 
-        Button btnDeshacer = new Button("↶");
-        btnDeshacer.setStyle("-fx-background-color: #ff9800; -fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold; -fx-background-radius: 50%; -fx-min-width: 62px; -fx-min-height: 62px; -fx-max-width: 62px; -fx-max-height: 62px;");
+        Button btnDeshacer = new Button("Deshacer");
+        btnDeshacer.getStyleClass().add("boton-estilo");
         btnDeshacer.setOnAction(e -> controlador.deshacer());
 
+
+        //Ordenamos los botones y textos
         HBox panelInferior = new HBox(30, btnPista, btnDeshacer);
         panelInferior.setAlignment(Pos.CENTER);
         panelInferior.setPadding(new Insets(15, 0, 10, 0));
@@ -86,14 +108,17 @@ public class JuegoGUI {
         raiz.setTop(panelSuperior);
         raiz.setCenter(centro);
 
-        Scene escena = new Scene(raiz, 760, 620);
+        //Creamos la escena, guardamos la root e implementamos css
+        Scene scene = new Scene(raiz, 760, 620);
+        scene.getStylesheets().add("/estilo.css");
         stage.setTitle("Number Match");
-        stage.setScene(escena);
+        stage.setScene(scene);
         stage.setMinWidth(720);
         stage.setMinHeight(620);
         stage.show();
     }
 
+    //Actualizamos la informacion de los textos dependiendo de si hubo modificaciones en el juego
     public void actualizarInfo(int puntos, int encontradas, int pendientes, int pistas) {
         lblPuntos.setText(String.valueOf(puntos));
         lblEncontradas.setText("Encontradas: " + encontradas);
