@@ -56,8 +56,7 @@ public class Main extends Application {
         stage.show();
     }
 
-
-
+    //Una ventana de emergencia donde pedimos los valores que usaremos para crear la tabla
     private int pedirNumero(String mensaje, int minimo, int maximo) {
         while (true) {
             TextInputDialog dialogo = new TextInputDialog();

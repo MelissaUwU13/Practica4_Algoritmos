@@ -18,6 +18,9 @@ public class Controlador {
         actualizarVista();
     }
 
+    //Revisamos las selecciones de los botones, verificamos si hubo pares y actualizamos
+    //los movimientos realizados, y en caso de que el juego alla terminado, mandara un mensae
+    //al jugador de que el juego ya termino
     public void manejarSeleccion(int fila, int col) {
         Casilla actual = juego.getTablero().getCasilla(fila, col);
         if (actual == null || !actual.isActiva()) return;
@@ -50,6 +53,7 @@ public class Controlador {
         }
     }
 
+    //Metodo para mensajes y resaltar las casillas, lo utilizamos para la parte de la GUI
     public void pedirPista() {
         Casilla[] pista = juego.darPista();
         actualizarVista();
@@ -64,12 +68,14 @@ public class Controlador {
         tableroGUI.resaltarPista(pista[0], pista[1]);
     }
 
+    //Mensaje que se manda al deshacer un movimiento
     public void deshacer() {
         if (!juego.deshacer())
             mostrarMensaje("Deshacer", "No hay movimientos para deshacer.");
         actualizarVista();
     }
 
+    //Actualizamos los elementos de la parte grafica
     public void actualizarVista() {
         juegoGUI.actualizarInfo(
                 juego.getPuntos(),
@@ -80,6 +86,7 @@ public class Controlador {
         tableroGUI.actualizar();
     }
 
+    //Metodo que nos sirve para crear las ventanas emergentes para mostrar los mensajes
     private void mostrarMensaje(String titulo, String contenido) {
         javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
         alerta.setTitle(titulo);

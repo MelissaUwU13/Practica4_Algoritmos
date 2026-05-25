@@ -1,58 +1,111 @@
 package org.example.practica4_algoritmos;
 
+//Clase lista Simple en la cual trabajamos en clase
 public class ListaSimple<T> {
-
-    //esto no aqui asi que modificar!!!
-    private static class Nodo<E> {
-        E info;
-        Nodo<E> sig;
-        Nodo(E info) { this.info = info; }
-    }
-
-    private Nodo<T> inicio;
+    private Node<T> inicio;
     private int tamanio;
 
-    public ListaSimple() {
+    public ListaSimple(){
         this.inicio = null;
-        this.tamanio = 0;
     }
 
     public void insertarInicio(T dato) {
-        Nodo<T> n = new Nodo<>(dato);
-        n.sig = inicio;
+        Node<T> n = new Node<>(dato);
+        n.setInfo(dato);
+        n.setSig(inicio);
         inicio = n;
         tamanio++;
     }
 
     public void insertarFinal(T dato) {
-        Nodo<T> n = new Nodo<>(dato);
+        Node<T> n = new Node<>(dato);
+        n.setInfo(dato);
+
         if (inicio == null) {
+            n.setSig(null);
             inicio = n;
         } else {
-            Nodo<T> r = inicio;
-            while (r.sig != null) r = r.sig;
-            r.sig = n;
+            Node<T> r = inicio;
+            while (r.getSig() != null) {
+                r = r.getSig();
+            }
+            r.setSig(n);
+            n.setSig(null);
         }
         tamanio++;
     }
 
     public T eliminarInicio() {
-        if (inicio == null) return null;
-        T dato = inicio.info;
-        inicio = inicio.sig;
-        tamanio--;
+        T regreso = null;
+        if (inicio == null) {
+            System.out.println("Lista Vacia");
+        } else {
+            regreso = inicio.getInfo();
+            inicio = inicio.getSig();
+            tamanio--;
+        }
+        return regreso;
+    }
+
+    public T eliminarFinal() {
+        T dato = null;
+
+        if (inicio == null) {
+            System.out.println("Lista Vacia");
+        } else if (inicio.getSig() == null) {
+            dato = inicio.getInfo();
+            inicio = null;
+            tamanio--;
+        } else {
+            Node<T> r = inicio;
+            Node<T> a = r;
+            while (r.getSig() != null) {
+                a = r;
+                r = r.getSig();
+            }
+            dato = r.getInfo();
+            a.setSig(null);
+            tamanio--;
+        }
+
         return dato;
     }
 
+    //Metodo agregado para obtener el valor de x posicion
     public T obtener(int indice) {
         if (indice < 0 || indice >= tamanio) return null;
-        Nodo<T> actual = inicio;
-        for (int i = 0; i < indice; i++) actual = actual.sig;
-        return actual.info;
+        Node<T> actual = inicio;
+        for (int i = 0; i < indice; i++) {
+            actual = actual.getSig();
+        }
+        return actual.getInfo();
     }
 
-    public int tamanio() { return tamanio; }
-    public boolean estaVacia() { return inicio == null; }
-    public void vaciar() { inicio = null; tamanio = 0; }
-    public T peekInicio() { return inicio == null ? null : inicio.info; }
+    public int tamanio() {
+        return tamanio;
+    }
+
+    //Metodo que nos ayudara a determinar si la fila esta vacia
+    public boolean estaVacia() {
+        return inicio == null;
+    }
+
+    public void vaciar() {
+        inicio = null;
+        tamanio = 0;
+    }
+
+    public T peekInicio() {
+        return inicio == null ? null : inicio.getInfo();
+    }
+
+    public String mostrarLista() {
+        String cadena = "";
+        Node<T> r = inicio;
+        while (r != null) {
+            cadena += r.getInfo() + " ";
+            r = r.getSig();
+        }
+        return cadena;
+    }
 }

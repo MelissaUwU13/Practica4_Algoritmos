@@ -9,6 +9,7 @@ public class Juego {
     private int concordanciasPendientes;
     private int pistasRestantes;
 
+    //Constructor
     public Juego(int filas, int columnas) {
         tablero = new Tablero(filas, columnas);
         historial = new ListaSimple<>();
@@ -25,7 +26,9 @@ public class Juego {
     public int getConcordanciasPendientes() { return concordanciasPendientes; }
     public int getPistasRestantes() { return pistasRestantes; }
 
+    //Verificamos si la seleccion es correcta
     public boolean seleccionarPar(Casilla primera, Casilla segunda) {
+        //Movimientos invalidos!!
         if (primera == null || segunda == null){
             return false;
         }
@@ -46,8 +49,9 @@ public class Juego {
             return false;
         }
 
+        //En caso de que el movimiento sea valido, guarderemos la informacion al historial
+        //Actualizaremos la informacion de la tabla y de las casillas
         else {
-
             historial.insertarInicio(new Movimiento(primera, segunda, puntos, concordanciasEncontradas, concordanciasPendientes, pistasRestantes));
 
             primera.setActiva(false);
@@ -62,27 +66,30 @@ public class Juego {
         }
     }
 
-    // Validación usando nodos y enlaces (ahora con Node<Casilla>)
+    //Validación usando nodos y enlaces
     public boolean esMovimientoValido(Casilla a, Casilla b) {
         if (a == null || b == null) return false;
         Node<Casilla> nodoA = tablero.getNode(a.getFila(), a.getColumna());
         Node<Casilla> nodoB = tablero.getNode(b.getFila(), b.getColumna());
 
-        // Misma fila -> recorrer left/right
+        //Misma fila -> recorrer left/right
         if (a.getFila() == b.getFila()) {
             return caminoLibreHorizontal(nodoA, nodoB);
         }
-        // Misma columna -> up/down
+        //Misma columna -> up/down
         if (a.getColumna() == b.getColumna()) {
             return caminoLibreVertical(nodoA, nodoB);
         }
-        // Diagonal (|Δfila| == |Δcol|)
+        //Diagonal (|Δfila| == |Δcol|)
         if (Math.abs(a.getFila() - b.getFila()) == Math.abs(a.getColumna() - b.getColumna())) {
             return caminoLibreDiagonal(nodoA, nodoB);
         }
-        // Caso especial: borde lineal (final de fila con inicio de la siguiente)
         return caminoLibreLineal(a, b);
     }
+
+    //Estos metodos nos ayudaran a unificar los caminos a lo largo del jeugo, ya que
+    //iran desapareciendo las casillas y el juego debe mantener la conexion de los nodos
+    //ya sea horizontal, vertical o diagonal
 
     private boolean caminoLibreHorizontal(Node<Casilla> start, Node<Casilla> end) {
         int step = (start.getContent().getColumna() < end.getContent().getColumna()) ? 1 : -1;
@@ -133,6 +140,9 @@ public class Juego {
         return false;
     }
 
+    //Verificamos las conexiones o concordancias, usando el mismo metodo anteriomente
+    //utilizado pero una vez encontrada una posicion valida, regresamos la posicion, en caso
+    //de no encontrarse regresara null
     public Casilla[] darPista() {
         if (pistasRestantes <= 0) return null;
         for (int i = 0; i < tablero.getTotalCasillas(); i++) {
@@ -150,6 +160,7 @@ public class Juego {
         return null;
     }
 
+    //Recuperamos el movimiento anterior y actualizamos los datos
     public boolean deshacer() {
         Movimiento mov = historial.eliminarInicio();
         if (mov == null) return false;
@@ -162,12 +173,7 @@ public class Juego {
         return true;
     }
 
-    public boolean agregarNumeros() {
-        boolean agregado = tablero.agregarNumerosActivosAlFinal();
-        concordanciasPendientes = calcularConcordanciasPendientes();
-        return agregado;
-    }
-
+    //Verificamos si hay movimientos validos, tiene un comportamiento similar al de concordancias pendientes
     public boolean hayMovimientosDisponibles() {
         for (int i = 0; i < tablero.getTotalCasillas(); i++) {
             Casilla a = tablero.getCasillas().obtener(i);
@@ -181,10 +187,13 @@ public class Juego {
         return false;
     }
 
+    //Si ya no hay movimientos disponibles, el juego termina
     public boolean juegoTerminado() {
         return !hayMovimientosDisponibles();
     }
 
+    //Verificamos si hay pares o sumas por realizar, las contamos y verificamos que el
+    //movimiento sea valido, esto nos ayudara a determinar cuando acabara el juego
     private int calcularConcordanciasPendientes() {
         int cont = 0;
         for (int i = 0; i < tablero.getTotalCasillas(); i++) {

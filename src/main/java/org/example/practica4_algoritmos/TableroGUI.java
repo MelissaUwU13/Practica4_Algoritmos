@@ -1,9 +1,7 @@
 package org.example.practica4_algoritmos;
 
-import javafx.animation.PauseTransition;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
-import javafx.util.Duration;
 
 public class TableroGUI {
     private Controlador controlador;
@@ -11,6 +9,7 @@ public class TableroGUI {
     private GridPane gridPane;
     private Button[][] botones;
 
+    //Constructor
     public TableroGUI(Controlador controlador, Tablero tablero) {
         this.controlador = controlador;
         this.tablero = tablero;

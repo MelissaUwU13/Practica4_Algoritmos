@@ -4,23 +4,28 @@ import java.util.Random;
 
 public class Tablero {
     private int filas, columnas;
-    private ListaSimple<ListaSimple<Node<Casilla>>> filasNodos; // lista de filas
-    private ListaSimple<Casilla> casillas; // lista lineal de todas las casillas
+    private ListaSimple<ListaSimple<Node<Casilla>>> filasNodos; //lista de listas
+    private ListaSimple<Casilla> casillas; //lista de las casillas
     private static final int MAX_FILAS = 18;
 
     public Tablero(int filas, int columnas) {
         this.filas = filas;
         this.columnas = columnas;
+        //lista madre
         this.filasNodos = new ListaSimple<>();
         this.casillas = new ListaSimple<>();
         generarInicial();
         conectarNodos();
     }
 
+    //Para generar el tablero, estaremos trabajando con listas, en la cual tenemos una lista madre
+    //donde cada uno de los elementos va ingresado listas, formando asi el tablero
     private void generarInicial() {
         Random rand = new Random();
         for (int f = 0; f < filas; f++) {
             ListaSimple<Node<Casilla>> filaActual = new ListaSimple<>();
+
+            //Ingresamos las casillas en las filas
             for (int c = 0; c < columnas; c++) {
                 int valor = rand.nextInt(9) + 1;
                 Casilla cas = new Casilla(f, c, valor);
@@ -28,18 +33,19 @@ public class Tablero {
                 filaActual.insertarFinal(node);
                 casillas.insertarFinal(cas);
             }
+            //Ingresamos las subs listas en la lista madre
             filasNodos.insertarFinal(filaActual);
         }
     }
 
-    // Obtiene un nodo por coordenadas (búsqueda O(filas+columnas))
+    //Obtiene un nodo por coordenadas
     private Node<Casilla> obtenerNodo(int fila, int col) {
         if (fila < 0 || fila >= filas || col < 0 || col >= columnas) return null;
         ListaSimple<Node<Casilla>> filaNodos = filasNodos.obtener(fila);
         return filaNodos.obtener(col);
     }
 
-    // Conecta todos los nodos (8 direcciones) usando referencias
+    //Conecta todos los nodos usando referencias
     private void conectarNodos() {
         for (int f = 0; f < filas; f++) {
             for (int c = 0; c < columnas; c++) {
@@ -64,59 +70,16 @@ public class Tablero {
         }
     }
 
+    //GETTERS
     public Casilla getCasilla(int fila, int col) {
         Node<Casilla> node = obtenerNodo(fila, col);
         return node == null ? null : node.getContent();
     }
-
     public Node<Casilla> getNode(int fila, int col) {
         return obtenerNodo(fila, col);
     }
-
     public ListaSimple<Casilla> getCasillas() { return casillas; }
     public int getFilas() { return filas; }
     public int getColumnas() { return columnas; }
     public int getTotalCasillas() { return casillas.tamanio(); }
-    public boolean puedeCrecer() { return filas < MAX_FILAS; }
-
-    // Agrega nuevas filas con los números activos
-    public boolean agregarNumerosActivosAlFinal() {
-        if (!puedeCrecer()) return false;
-
-        // Recolectar valores de casillas activas
-        ListaSimple<Integer> valores = new ListaSimple<>();
-        for (int i = 0; i < casillas.tamanio(); i++) {
-            Casilla c = casillas.obtener(i);
-            if (c != null && c.isActiva()) valores.insertarFinal(c.getValor());
-        }
-        if (valores.estaVacia()) return false;
-
-        int espaciosDisponibles = (MAX_FILAS - filas) * columnas;
-        int totalAInsertar = Math.min(valores.tamanio(), espaciosDisponibles);
-        int nuevasFilas = filas + (totalAInsertar + columnas - 1) / columnas;
-
-        // Crear nuevas filas y nodos
-        for (int f = filas; f < nuevasFilas; f++) {
-            ListaSimple<Node<Casilla>> nuevaFila = new ListaSimple<>();
-            for (int c = 0; c < columnas; c++) {
-                if (valores.tamanio() > 0) {
-                    int valor = valores.eliminarInicio();
-                    Casilla nuevaCas = new Casilla(f, c, valor);
-                    Node<Casilla> newNode = new Node<>(nuevaCas);
-                    nuevaFila.insertarFinal(newNode);
-                    casillas.insertarFinal(nuevaCas);
-                } else {
-                    Casilla vacia = new Casilla(f, c, 0);
-                    vacia.setActiva(false);
-                    Node<Casilla> newNode = new Node<>(vacia);
-                    nuevaFila.insertarFinal(newNode);
-                    casillas.insertarFinal(vacia);
-                }
-            }
-            filasNodos.insertarFinal(nuevaFila);
-        }
-        this.filas = nuevasFilas;
-        conectarNodos(); // Reconectar todo el tablero
-        return true;
-    }
 }

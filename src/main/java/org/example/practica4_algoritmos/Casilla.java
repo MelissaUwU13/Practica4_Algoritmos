@@ -1,5 +1,7 @@
 package org.example.practica4_algoritmos;
 
+//Esta clase nos sirve para representar el valor de la tabla, para almacenar la informacion
+//Su posicion y su estado
 public class Casilla implements Comparable<Casilla> {
     private int fila, columna, valor;
     private boolean activa, seleccionada;
@@ -23,6 +25,7 @@ public class Casilla implements Comparable<Casilla> {
     public boolean isSeleccionada() { return seleccionada; }
     public void setSeleccionada(boolean seleccionada) { this.seleccionada = seleccionada; }
 
+    //Comparamos si las casillas tienen el mismo valor o si la suma de las dos es igual a 10
     @Override
     public int compareTo(Casilla otra) {
         if (otra == null) return -1;

@@ -96,7 +96,6 @@ public class JuegoGUI {
         btnDeshacer.getStyleClass().add("boton-estilo");
         btnDeshacer.setOnAction(e -> controlador.deshacer());
 
-
         //Ordenamos los botones y textos
         HBox panelInferior = new HBox(30, btnPista, btnDeshacer);
         panelInferior.setAlignment(Pos.CENTER);
